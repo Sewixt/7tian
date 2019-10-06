@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}
+    个人中心
+{% endblock %}
+
+
+{% block label %}
+    个人中心
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+            <!--  个人表格  -->
+            <div class="col-lg-12">
+              <!-- Circle Buttons -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">个人详情</h6>
+                </div>
+                <div class="card-body">
+                    <!--  个人信息  -->
+                    <table class="table">
+                    <tr>
+                        <td rowspan="4"  style="width: 40%">
+                            <img src="/static/img/111.png" style= width:90%;height:70%>
+                        </td>
+                        <td>姓名</td>
+                        <th>黎&nbsp&nbsp&nbsp丰</th>
+                        <td>性别</td>
+                        <th>男</th>
+                    </tr>
+                    <tr>
+                        <td>年龄</td>
+                        <th>18</th>
+                        <td>职业</td>
+                        <th>学生</th>
+                    </tr>
+                    <tr>
+                        <td>电话</td>
+                        <th>3544299</th>
+                        <td>身高/体重</td>
+                        <th>178/62</th>
+                    </tr>
+                    <tr>
+                        <td>有钱</td>
+                        <td>未婚</td>
+                        <td>单身</td>
+                        <td>可撩</td>
+                    </tr>
+                    <tr>
+                        <td>地址</td>
+                        <th colspan="4" style="text-align: left">湖南省张家界市慈利县tjp</th>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <!-- 课程表 -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">课程表</h6>
+                    </div>
+                <div class="card-body">
+                <!--  课程表详情  -->
+                    <table class="table  table-bordered">
+                          <thead>
+                            <tr>
+                              <th colspan="7" style="width: 100%;font-size:30px;color: #dda20a;text-align: center">{{ head }}</th>
+                            </tr>
+                          </thead>
+                        <tr style="text-align: center">
+                            <th>周一</th>
+                            <th>周二</th>
+                            <th>周三</th>
+                            <th>周四</th>
+                            <th>周五</th>
+                            <th>周六</th>
+                            <th>周日</th>
+                        </tr>
+                        <tr>
+                            {% for line in calendar %}
+                                <tr>
+                                    {% for day in line %}
+                                        <td style="text-align: center">{{ day }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+    </div>
+{% endblock %}

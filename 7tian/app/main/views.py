@@ -200,9 +200,64 @@ def leave_list(page):
     page_data = pager.page_data(page)       #
     return render_template("leave_list.html",**locals())
 
+class Calender:
+    def __init__(self,month = "now"):
+        self.result = [ ]
+        big_month = [1,3,5,7,8,10,12]
+        small_month = [4,6,9,11]
+        now = datetime.datetime.now()
+        if month == "now":
+            month = now.month
+            first_date = datetime.datetime(now.year,now.month,1,1)
+        else:
+            first_date = datetime.datetime(now.year,month,1,1)
 
+        if month in big_month:
+            day_range = range(1,32)
+        elif month in small_month:
+            day_range = range(1,31)
+        else:
+            day_range = range(1,30)
 
+        #获取指定月的天数
+        self.day_range = list(day_range)
+        first_week = first_date.weekday() #获取指定月1号是周几
 
+        line1 = [ ]
+        for j in range(first_week):
+            line1.append(" ")
+        for k in range(7-first_week):
+            line1.append(str(self.day_range.pop(0)))
+        self.result.append(line1)
+
+        while self.day_range:
+            line = [ ]    #第二周及往后的数据
+            for i in range(7):
+                if len(line) < 7 and self.day_range:
+                    line.append(str(self.day_range.pop(0)))
+                else:
+                    line.append(" ")
+            self.result.append(line)
+
+    def return_month(self):
+        #返回列表嵌套的日历
+        return self.result
+
+    def print_month(self):
+        ###按照日历格式打印样式
+        print("星期一  星期二  星期三  星期四  星期五  星期六 星期日")
+        for line in self.result:
+            for day in line:
+                day = day.center(6)
+                print(day, end="  ")
+            print()
+
+@main.route("/user_info/")
+def user_info():
+    calendar = Calender().return_month()
+    now = datetime.datetime.now()
+    head = "北京优就业%s年%s月份课表"%(now.year,now.month)
+    return render_template("user_info.html",**locals())
 
 
 ######################################
