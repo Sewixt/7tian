@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+    发布任务
+{% endblock %}
+
+
+{% block label %}
+    <h3>任务发布</h3>
+{% endblock %}
+
+
+{% block content %}
+    {% for t in task() %}
+        {{ t }}
+    {% endfor %}
+    <input class="btn btn-danger btn-block" type="submit" value="提交">
+{% endblock %}
+
+

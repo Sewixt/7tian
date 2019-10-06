@@ -11,7 +11,7 @@ from flask import redirect
 from flask import request
 from flask import session
 
-
+from .forms import TaskForm
 from app import api
 from flask_restful import Resource
 # from main import csrf
@@ -273,6 +273,111 @@ def Valid_code(len=6):
     valid_code ="".join([random.choice(str) for i in range(len)])
     return valid_code
 
+@main.route("/add_task/",methods=["POST","GET"])
+def add_task():
+    task = TaskForm
+    return render_template("add_task.html",**locals())
+
+@api.resource("/Api/leave/")
+class LeaveApi(Resource):
+    def __init__(self):
+        """
+        定义返回的格式
+        """
+        super(LeaveApi,self).__init__()
+        self.result = {
+            "version":"1.0",
+            "data":""
+        }
+    def set_data(self,leave):
+        """
+        定义返回的数据
+        """
+        result_data = {
+            "request_name":leave.request_name,
+            "request_type":leave.request_type,
+            "request_start_time":leave.request_start_time,
+            "request_end_time":leave.request_end_time,
+            "request_description":leave.request_description,
+            "request_phone":leave.request_phone,
+        }
+        return result_data
+    def get(self):
+        """
+        处理get请求
+        """
+        data = request.args  #获取请求的数据
+        id = data.get("id")   #获取数据的id
+        if id:
+            leave = Leave.query.get(int(id))
+            result_data = self.set_data(leave)
+        else:    #如果id不存在，则返回所有数据
+            leaves = Leave.query.all()
+            result_data = []
+            for leave in leaves:
+                result_data.append(self.set_data(leave))
+        self.result["data"] = result_data
+        return self.result
+
+
+    def post(self):
+        """这是post请求，负责保存数据"""
+        data = request.form
+        request_id = data.get("request_id")
+        request_name = data.get("request_name")
+        request_type = data.get("request_type")
+        request_start_time = data.get("request_start_time")
+        request_end_time = data.get("request_end_time")
+        request_description = data.get("request_description")
+        request_phone = data.get("request_phone")
+
+        leave = Leave()
+        leave.request_id = request_id
+        leave.request_name = request_name
+        leave.request_type = request_type  # 假期类型
+        leave.request_start_time = request_start_time  # 起始时间
+        leave.request_end_time = request_end_time  # 结束时间
+        leave.request_description = request_description  # 请假事由
+        leave.request_phone = request_phone  # 联系方式
+        leave.request_status = "0"  # 假条状态
+        leave.save()
+
+        self.result["data"] = self.set_data(leave)
+        return self.result
+    def put(self):
+        data = request.form
+        id = data.get("id")
+        print(data)
+        print(data.keys())
+        leave = Leave.query.get(int(id))
+
+        leave.save()
+
+        self.result["data"] = self.set_data(leave)
+        return self.result
+
+    def delete(self):
+        data = request.form
+        return {"method":"这是delet请求，负责删除数据"}
+
+
+######################################上传图片
+from settings import STATICFILES_DIR
+# from main import csrf
+@main.route("/picture/",methods=["POST","GET"])
+# @csrf.exempt
+def picture():
+    p = {"picture":"img/1.jpg"}
+    if request.method == "POST":
+        file = request.files.get("photo")
+        file_name = file.filename
+        file_path = "img/%s"%file_name
+        save_path = os.path.join(STATICFILES_DIR,file_path)
+        file.save(save_path)
+        p = Picture()
+        p.picture = file_path
+        p.save()
+    return render_template("picture.html",p = p)
 #
 #
 # if __name__ == '__main__':

@@ -1,0 +1,5 @@
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}" >
+    <input type="file" name="photo">
+    <input type="submit" value="提交">
+</form>
