@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="ORM" uuid="9bfb042f-a02d-47b7-a8b9-bbd885ed0bf1">
+    <data-source source="LOCAL" name="ORM" uuid="0a60ef86-bdb2-457d-b503-260c2e53d11e">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:E:\myfire\Flaskpro\7tian\ORM.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:E:\myfire\Flaskpro\7tian\7tian\ORM.sqlite</jdbc-url>
       <driver-properties>
         <property name="enable_load_extension" value="true" />
       </driver-properties>

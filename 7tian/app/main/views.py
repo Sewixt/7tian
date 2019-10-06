@@ -18,6 +18,53 @@ from flask_restful import Resource
 from . import main
 from app.models import *
 
+#########################################分页器
+class Pager:
+    def __init__(self,data,page_size):   #分页数据，每页数据
+        self.data = data
+        self.page_size = page_size
+        self.is_start = False       #是否为首页
+        self.is_end = False         #是否为尾页
+        self.page_count = len(data)         #总数据
+        self.next_page = 0          #下一页
+        self.last_page = 0          #上一页
+        self.page_number = self.page_count/page_size        #总页数
+        #(data + page_size-1) // page_size
+        if self.page_number == int(self.page_number):
+            self.page_number = int(self.page_number)
+        else:
+            self.page_number = int(self.page_number)+1         #不能整除直接加1
+        self.page_range = range(1,self.page_number+1)
+    def page_data(self,page):
+        """
+                返回分页数据
+                :param page: 页码
+                page_size = 10
+                1    offect 0  limit(10)
+                2    offect 10 limit(10)
+                page_size = 10
+                1     start 0   end  10
+                2     start 10   end  20
+                3     start 20   end  30
+                """
+        self.next_page = int(page) + 1
+        self.last_page = int(page) - 1
+        if page <= self.page_range[-1]:
+            page_start = (page - 1)*self.page_size
+            page_end = page * self.page_size
+            #data = self.data.offset(page_start).limit(self.page_size)
+            data = self.data[page_start:page_end]
+            if page == 1:
+                self.is_start = True
+            else :
+                self.is_start = False
+            if page == self.page_range[-1]:
+                self.is_end = True
+            else:
+                self.is_end = False
+        else:
+            data = ["没有数据"]
+        return data
 
 
 
@@ -121,8 +168,37 @@ def logout():
     del session["username"]
     return response
 
+######################################请假条
+@main.route("/holiday_leave/",methods=["POST","GET"])
+def holiday_leave():
+    if request.method == "POST":
+        data =request.form
+        username = data.get("username")
+        request_type = data.get("request_type")
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
+        phone = data.get("phone")
+        request_description = data.get("request_description")
 
+        leave = Leave()
+        leave.request_id = request.cookies.get("id")
+        leave.request_name = username
+        leave.request_type = request_type
+        leave.request_start_time = start_time
+        leave.request_end_time = end_time
+        leave.request_phone = phone
+        leave.request_description = request_description
+        leave.request_status = "0"
+        leave.save()
+        return redirect("/leave_list/1/")
+    return render_template("holiday_leave.html")
 
+@main.route("/leave_list/<int:page>/")
+def leave_list(page):
+    leaves = Leave.query.all()   ##获取所有请假人员信息
+    pager = Pager(leaves,2)     ##实例化Pager
+    page_data = pager.page_data(page)       #
+    return render_template("leave_list.html",**locals())
 
 
 
